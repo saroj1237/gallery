@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "./Image";
+import useFetchImage from "../utils/hooks/useFetchImage";
 
 function Images() {
-  const [images, setImages] = useState([
-    "https://images.unsplash.com/photo-1533198801886-4cdbbc312542?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
-    "https://images.unsplash.com/photo-1521435213950-8d3893133982?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
-    "https://images.unsplash.com/photo-1565266617019-0023f689a9c2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=741&q=80",
-    "https://images.unsplash.com/photo-1600867317504-3ea8cff32509?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=764&q=80",
-  ]);
+
   const [url, seturl] = useState("");
+  const [images,setImages] = useFetchImage()
 
   const inputRef = useRef(null);
 
@@ -39,7 +36,7 @@ function Images() {
   function ShowImage() {
     return images.map((img, index) => (
       <Image
-        image={img}
+        image={img.urls.regular}
         handleRemove={handleRemove}
         index={index}
         key={index}
