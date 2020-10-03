@@ -7,11 +7,12 @@ import routes from "./utils/routes";
 function App() {
   return (
     <Router>
-      <Header/>
+      <Header />
       <Switch>
-        {routes.map((route) => {
+        {routes.map((route, index) => {
           return (
             <Route
+              key={index}
               path={route.path}
               exact={route.exact}
               component={route.component}
