@@ -1,19 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./assets/css/style.css";
-import Images from "./components/Images";
+import Header from "./components/Header";
+import routes from "./utils/routes";
 
 function App() {
-  const [title, setTitle] = useState("hello world ");
-
   return (
-    <section className="flex justify-center">
-      <div className="w-10/12">
-        <div className="text-center">
-          <div className="border py-5 w-full">Hello React</div>
-          <Images />
-        </div>
-      </div>
-    </section>
+    <Router>
+      <Header/>
+      <Switch>
+        {routes.map((route) => {
+          return (
+            <Route
+              path={route.path}
+              exact={route.exact}
+              component={route.component}
+            />
+          );
+        })}
+      </Switch>
+    </Router>
   );
 }
 

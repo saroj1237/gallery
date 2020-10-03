@@ -4,7 +4,7 @@ function Image({ index, handleRemove, image }) {
   const [ismouseEnter, setismouseEnter] = useState(false);
 
   return (
-    <div className="w-1/3 flex justify-center my-4" key={index}>
+    <div className="p-1 border flex justify-center" key={index}>
       <div
         className="relative"
         onMouseEnter={() => {
@@ -18,8 +18,8 @@ function Image({ index, handleRemove, image }) {
           } `}
           onClick={() => handleRemove(index)}
         ></i>
-        <img width='150' src={image} />
       </div>
+      <img className ="flex flex-wrap" src={image} />
     </div>
   );
 }
