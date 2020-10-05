@@ -1,50 +1,59 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Link, useHistory } from "react-router-dom";
+import React, { useContext } from "react";
+import { BrowserRouter as NavLink, useHistory } from "react-router-dom";
 import firebase from "../config/firebase";
+import AppContext from "../store/AppContext";
 
 function Header() {
-  const [isLoggeIn, setisLoggeIn] = useState(false);
+  const [isLoggedIn, user] = useContext(AppContext);
   const history = useHistory();
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        setisLoggeIn(true);
-      }
-      console.log(user);
-    });
-  }, []);
 
   function handleLogout() {
     firebase
       .auth()
       .signOut()
-      .then(() => {
-        setisLoggeIn(false);
+      .then((res) => {
         history.replace("/login");
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e.response.data);
       });
   }
 
   return (
-    <nav className=" py-4 border bg-gray-900 text-white">
-      <ul className="flex justify-between text-2xl px-10">
-        <span className="flex">
-          <li className="mr-5">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="mr-5">
-            <Link to="/gallery">Gallery</Link>
-          </li>
-        </span>
+    <nav className="py-5 bg-gray-900 text-white flex justify-between">
+      <ul className="flex justify-between px-10">
+        <li className="mr-5">
+          <NavLink to="/" exact activeClassName="underline text-blue-200">
+            Home
+          </NavLink>
+        </li>
+        <li className="mr-5">
+          <NavLink
+            to="/gallery"
+            strict
+            activeClassName="underline text-blue-200"
+          >
+            Gallery
+          </NavLink>
+        </li>
+      </ul>
+      <ul className="flex justify-between px-10">
         <li>
-          {isLoggeIn ? (
+          {isLoggedIn ? (
             <button onClick={handleLogout}>Logout</button>
           ) : (
-            <Link to="/login">Login</Link>
+            <NavLink to="/login" activeClassName="underline text-blue-200">
+              Login
+            </NavLink>
           )}
         </li>
+        {!isLoggedIn && (
+          <li className="ml-5">
+            <NavLink to="/signup" activeClassName="underline text-blue-200">
+              SignUp
+            </NavLink>
+          </li>
+        )}
       </ul>
     </nav>
   );
