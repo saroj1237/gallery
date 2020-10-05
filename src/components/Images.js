@@ -1,64 +1,42 @@
-import React, { useState, useRef } from "react";
-import Image from "./Image";
+import React, { useState, useEffect } from "react";
+import Image from "./image";
 import useFetchImage from "../utils/hooks/useFetchImage";
 import Loading from "./Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useDebounce from "../utils/hooks/useDebounce";
+import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
 
-function Images() {
-  const [page, setpage] = useState(1);
-  const [searchItem, setsearchItem] = useState(null);
+export default function Images() {
+  const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(null);
   const [images, setImages, errors, isLoading] = useFetchImage(
     page,
-    searchItem
+    searchTerm
   );
 
   function handleRemove(index) {
-    // setImages(images.filter((image, i) => i != index));
     setImages([
       ...images.slice(0, index),
       ...images.slice(index + 1, images.length),
     ]);
   }
 
-  function ShowImage() {
-    return (
-      <InfiniteScroll
-        dataLength={images.length}
-        next={() => setpage(page + 1)}
-        hasMore={true}
-        className="flex flex-wrap w-1/3"
-      >
-        {images.map((img, index) => (
-          <Image
-          className = ''
-            image={img.urls.regular}
-            handleRemove={handleRemove}
-            index={index}
-            key={index}
-          />
-        ))}
-      </InfiniteScroll>
-    );
-  }
+  const [showPreview, setShowPreview] = useState(false);
 
   const debounce = useDebounce();
-
-  function handleChange(e) {
+  function handleInput(e) {
     const text = e.target.value;
-    debounce(() => {
-      setsearchItem(text);
-    });
+    debounce(() => setSearchTerm(text));
   }
 
   return (
     <section>
-      <div className="my-5 w-full">
+      <div className="my-5">
         <input
-          placeholder="search photo here"
-          className="p-2 rounded w-full border shadow "
           type="text"
-          onChange={handleChange}
+          onChange={handleInput}
+          className="w-full border rounded shadow p-2"
+          placeholder="Search Photos Here"
         />
       </div>
       {errors.length > 0 && (
@@ -66,12 +44,52 @@ function Images() {
           <p className="m-auto">{errors[0]}</p>
         </div>
       )}
+      <AnimateSharedLayout>
+        <InfiniteScroll
+          dataLength={images.length}
+          next={() => setPage(page + 1)}
+          hasMore={true}
+          className="flex flex-wrap"
+        >
+          {images.map((img, index) => (
+            <motion.div
+              className="w-1/6 p-1 border flex justify-center"
+              key={index}
+              layoutId={index}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <Image
+                show={() => setShowPreview(index)}
+                image={img.urls.regular}
+                handleRemove={handleRemove}
+                index={index}
+              />
+            </motion.div>
+          ))}
+        </InfiniteScroll>
 
-      <ShowImage />
-
+        <AnimatePresence>
+          {showPreview && (
+            <motion.section
+              layoutId={showPreview}
+              exit={{ opacity: 0, rotate: 360, transition: { duration: 1 } }}
+              className="fixed w-full h-full flex justify-center items-center top-0 left-0 z-40"
+              onClick={() => setShowPreview(false)}
+            >
+              <div className="bg-white">
+                <img
+                  src={images[showPreview].urls.regular}
+                  className="rounded-lg"
+                  width="300"
+                  height="auto"
+                />
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+      </AnimateSharedLayout>
       {isLoading && <Loading />}
     </section>
   );
 }
-
-export default Images;
