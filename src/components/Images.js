@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Image from "./image";
+import Image from "./Image";
 import useFetchImage from "../utils/hooks/useFetchImage";
 import Loading from "./Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -53,7 +53,7 @@ export default function Images() {
         >
           {images.map((img, index) => (
             <motion.div
-              className="w-1/6 p-1 border flex justify-center"
+              className="w-1/4 p-1 border flex justify-center"
               key={index}
               layoutId={index}
               initial={{ opacity: 0 }}
@@ -81,8 +81,8 @@ export default function Images() {
                 <img
                   src={images[showPreview].urls.regular}
                   className="rounded-lg"
-                  width="300"
-                  height="auto"
+                  width="400"
+                  height="400"
                 />
               </div>
             </motion.section>

@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import useTFClassify from "../utils/hooks/useTFClassify";
+import useTFClassify from "../utils/hooks/useTFimgPredict";
+import useTFimgPredict from "../utils/hooks/useTFimgPredict";
 
 function Image({ index, image, handleRemove, show }) {
   const [isHovering, setIsHovering] = useState(false);
   const imageRef = useRef();
-  const { predict, predictions, setPredictions, isLoading } = useTFClassify();
+  const { predict, predictions, setPredictions, isLoading } = useTFimgPredict();
 
   return (
     <div
